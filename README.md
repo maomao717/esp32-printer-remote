@@ -64,4 +64,4 @@ ESP32-Printer-Remote 是一个基于 **ESP32-S3** 的双模式 USB 桥接器固�
 ### 3. 烧录固件
 
 ```bash
-git clone https://github.com/你的用户名/ESP32-Printer-Remote.git
+git clone https://github.com/maomao717/ESP32-Printer-Remote.git
