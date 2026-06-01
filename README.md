@@ -1,21 +1,3 @@
-好的，我来帮你整理好这份用于 **创建 GitHub 仓库** 的配置信息。
-
----
-
-## 仓库基本信息
-
-| 项目 | 内容 |
-|------|------|
-| **仓库名称** | `ESP32-Printer-Remote` |
-| **描述** | Dual-mode USB bridge for ESP32-S3: turn old USB printer into Wi-Fi printer + remote control computer as keyboard |
-| **可见度** | **Public（公开）**——建议选择公开，开源项目可以让更多人使用和贡献 |
-| **添加 README** | ✅ 勾选（推荐） |
-
----
-
-## README 内容（可直接复制粘贴）
-
-```markdown
 # ESP32-Printer-Remote
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
