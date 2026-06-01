@@ -1,7 +1,3 @@
-/**
- * ESP32-S3 双模式 USB 桥接器 v4.0 - 支持有线+无线远控
- * 远控模式：USB HID（有线）+ BLE Keyboard（蓝牙）双支持
- */
 
 #include <WiFi.h>
 #include <WebServer.h>
