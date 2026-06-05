@@ -21,7 +21,7 @@
 #include <ArduinoJson.h>
 #include "USB.h"
 #include "USBHID.h"
-#include "usb_host.h"
+#include "usb/usb_host.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -224,7 +224,8 @@ void printerTransferCallback(usb_transfer_t* transfer) {
     case USB_TRANSFER_STATUS_STALL:
       ESP_LOGW("USB", "Transfer stall, clearing...");
       if (deviceHandle && bulkOutEpAddr) {
-        usb_host_clear_endpoint_stall(deviceHandle, bulkOutEpAddr);
+        usb_host_endpoint_halt(deviceHandle, bulkOutEpAddr);
+usb_host_endpoint_flush(deviceHandle, bulkOutEpAddr);
       }
       break;
     default:
