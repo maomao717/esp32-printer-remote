@@ -10,8 +10,8 @@
 #include <DNSServer.h>
 #include <Preferences.h>
 #include <ArduinoJson.h>
-#include "USB.h"
-#include "USBHID.h"
+// #include "USB.h"      // 删除或注释
+// #include "USBHID.h"   // 删除或注释
 #include "usb/usb_host.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
@@ -19,7 +19,6 @@
 #include "freertos/semphr.h"
 #include <Adafruit_TinyUSB.h>
 #include <BleKeyboard.h>
-
 // ====================== 宏定义补充 ======================
 #ifndef USB_B_DESCRIPTOR_TYPE_ENDPOINT
 #define USB_B_DESCRIPTOR_TYPE_ENDPOINT 0x05
@@ -344,11 +343,11 @@ void initUsbHost() {
     
     usbMutex = xSemaphoreCreateMutex();
     xTaskCreatePinnedToCore(usbHostTask, "usb_events", 8192, NULL, 3, NULL, 0);
-    USB.begin();
+    
+    // 删除这行：USB.begin();  // 用 Adafruit_TinyUSB 代替
     
     Serial.println("[USB] Host initialized");
 }
-
 void deinitUsbHost() {
     if (clientHandle) { 
         usb_host_client_deregister(clientHandle); 
@@ -611,23 +610,25 @@ void switchWorkMode(WorkMode newMode) {
 void initRemoteMode() {
     hidMutex = xSemaphoreCreateMutex();
     
-    usb_hid.setReportDescriptor(keyboard_report_desc, sizeof(keyboard_report_desc));
-    usb_hid.begin();
+    // 暂时禁用有线 HID，避免和 USB Host 冲突
+    // usb_hid.setReportDescriptor(keyboard_report_desc, sizeof(keyboard_report_desc));
+    // usb_hid.begin();
+    // for (int i = 0; i < 50; i++) { 
+    //     if (TinyUSBDevice.mounted()) { 
+    //         usbHidReady = true; 
+    //         Serial.println("[HID] USB HID ready");
+    //         break; 
+    //     } 
+    //     delay(100); 
+    // }
     
-    for (int i = 0; i < 50; i++) { 
-        if (TinyUSBDevice.mounted()) { 
-            usbHidReady = true; 
-            Serial.println("[HID] USB HID ready");
-            break; 
-        } 
-        delay(100); 
-    }
+    usbHidReady = false;  // 强制使用蓝牙
     
     bleKeyboard.begin(); 
     bleReady = true;
-    remoteReady = usbHidReady || bleReady;
+    remoteReady = bleReady;
     
-    Serial.println("[Remote] Remote mode initialized");
+    Serial.println("[Remote] BLE keyboard ready (USB HID disabled)");
 }
 
 // ====================== 网页服务器 ======================
@@ -798,6 +799,7 @@ void setup() {
     
     currentWorkMode = (prefs.getInt("work_mode", 1) == 0) ? MODE_PRINTER : MODE_REMOTE;
     
+    // 只初始化当前模式需要的 USB
     if (currentWorkMode == MODE_REMOTE) {
         initRemoteMode();
     } else {
